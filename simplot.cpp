@@ -57,6 +57,8 @@ int main(int argc, char ** argv) {
      c->ToggleEventStatus();
      c->ToggleToolBar();
      h->Draw("cl");
+     c->Modified();
+     c->Update(); // this line updates the canvas automatically, should come after Draw()
 
      app.Run();
      return 0;

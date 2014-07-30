@@ -9,6 +9,7 @@
 #include <Riostream.h>
 #include <TH1F.h>
 #include <TCanvas.h>
+#include <TRootCanvas.h>
 
 //______________________________________________________________________________
 // Make a histogram
@@ -58,7 +59,10 @@ int main(int argc, char ** argv) {
      c->ToggleToolBar();
      h->Draw("cl");
      c->Modified();
+
      c->Update(); // this line updates the canvas automatically, should come after Draw()
+     // The following line to connect the close button of the window manager to the main frame, in order to close properly.
+     ((TRootCanvas *)c->GetCanvasImp())->Connect("CloseWindow()", "TApplication", gApplication, "Terminate()");
 
      app.Run();
      return 0;

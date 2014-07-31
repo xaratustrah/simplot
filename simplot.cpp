@@ -11,9 +11,11 @@
 #include <TCanvas.h>
 #include <TRootCanvas.h>
 
+#include "csvreader.h"
+
 //______________________________________________________________________________
 // Make a histogram
-TH1F * make_histo(const char* filename){
+TH1F * make_histo_ssv(const char* filename){
 
      ifstream data;
      data.open(filename);
@@ -40,6 +42,47 @@ TH1F * make_histo(const char* filename){
 }
 
 //______________________________________________________________________________
+// Make a histogram
+TH1F * make_histo_csv(const char* filename){
+
+     // Here is the data we want.
+     data_t data;
+
+     // Here is the file containing the data. Read it into data.
+     ifstream infile( filename );
+     infile >> data;
+
+     // Complain if something went wrong.
+     if (!infile.eof())
+     {
+	  cout << "Fooey!\n";
+	  return 0;
+     }
+
+     infile.close();
+
+     // Otherwise, list some basic information about the file.
+     cout << "Your CSV file contains " << data.size() << " records.\n";
+
+     unsigned max_record_size = 0;
+     for (unsigned n = 0; n < data.size(); n++)
+	  if (max_record_size < data[ n ].size())
+	       max_record_size = data[ n ].size();
+     cout << "The largest record has " << max_record_size << " fields.\n";
+
+     cout << "The second field in the fourth record contains the value " << data.at(3).at(1) << ".\n";
+
+     TH1F * h = new TH1F ("h", "Plot", data.size(), data.at(0).at(0), data.at(data.size() - 1).at(0));
+     for(Int_t i=0; i < data.size(); ++i)
+     {
+	  h->SetBinContent(i+1, data.at(i).at(1) );	  
+     }
+     h->SetLineColor(kRed);     
+
+     return h;
+}
+
+//______________________________________________________________________________
 int main(int argc, char ** argv) {
 
      if (argc != 2){
@@ -48,7 +91,18 @@ int main(int argc, char ** argv) {
      	  exit(EXIT_SUCCESS);
      }
 
-     TH1F * h = make_histo(argv[1]);
+     char *file_extension = argv[1] + (strlen(argv[1]) - 3); // get last 3 characters of the string, old style C programming :-)
+
+     TH1F * h;
+
+     if (!strcmp(file_extension, "txt"))
+	  h = make_histo_ssv(argv[1]);
+     else if (!strcmp(file_extension, "csv"))
+	  h = make_histo_csv(argv[1]);
+     else{
+	  cout << "Supported file types are:\n\n" << "    space separated text with txt extension or csv files.\n\n";
+	  exit(EXIT_FAILURE);
+     }
 
      TApplication app("App",&argc,argv);
 

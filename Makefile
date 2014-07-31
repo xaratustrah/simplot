@@ -19,7 +19,7 @@ CPPFLAGS += -g
 
 TARGET = simplot
 
-SRC = simplot.cpp
+SRC = simplot.cpp csvreader.cpp
 
 OBJ = $(SRC:.cpp=.o)
 

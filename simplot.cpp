@@ -106,7 +106,7 @@ int main(int argc, char ** argv) {
 
      TApplication app("App",&argc,argv);
 
-     TCanvas *c = new TCanvas("c", "Plot", 1600, 700);
+     TCanvas *c = new TCanvas("c", "Plot", 1000, 600);
      c->SetGrid();
      c->ToggleEditor();
      c->ToggleEventStatus();
